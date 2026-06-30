@@ -1,0 +1,25 @@
+# Unity (prototypes/*/)
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]serSettings/
+[Mm]emoryCaptures/
+*.csproj
+*.sln
+*.user
+*.unityproj
+.vsconfig
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Secrets — never commit. Matches .keys.local at the root AND in any scope dir.
+# Templates (.keys.local.example) are committed; real .keys.local files are not.
+.keys.local
