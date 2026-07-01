@@ -2,6 +2,16 @@
 
 Append a dated line whenever the craft doc or the pattern library changes. Newest on top.
 
+## 2026-06-30 — pattern: One Input Modality
+- **patterns/single-input-modality.md** (flagship) — Anton's insight after playing **Arrow Stack**
+  ("nicely done, but a 3D rotating cube, not tap-only"): successful hyper-hybrid-casual games keep
+  **the same interaction** for the whole core loop — *all* tap or *all* slide, **never mixed during
+  gameplay**. Grounded in motor-schema consolidation, seconds-to-fun onboarding, and mode-error
+  avoidance (mixing inputs → misfires → breaks the calm, no-pressure feel). Added as a **second
+  gate on the core verb** in `design-craft.md` (satisfying-raw *and* single-gesture) and as a
+  concept **screening question** ("can the whole loop be played with one repeated gesture?").
+  3D-object manipulation flagged as inherently multi-gesture → an anti-pattern for this genre.
+
 ## 2026-06-30 — initial version
 - Created the skill: the **craft** of designing a shippable hybrid-casual game + a **living,
   scalable pattern library** that grows from Anton's own play observations.

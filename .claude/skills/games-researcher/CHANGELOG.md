@@ -25,3 +25,17 @@ the skill's evolution stays auditable. Newest on top.
   freshest breakout (Apr 2026); Sensor Tower acquired AppMagic + owns data.ai;
   Supersonic/ironSource shutting down (Apr 2026); Meta Ad Library impression buckets;
   Apple Games app split. Benchmark numbers are aggregator-sourced — flagged as directional.
+
+## 2026-06-30 — 1-day refresh run (arrow/sort delta)
+- Live pull (US free/grossing/new + puzzle 7012, BR/PH): market structure unchanged vs
+  06-29. New grain — 4 same-day new entrants (Arrow Stack!, Traffic Sort!, Pack Flow,
+  Café Sort), confirming arrow+sort windows now openly contested.
+- Leader rating velocity: Arrows – Puzzle Escape 277.5k (#8 free/#4 puzzle);
+  Block Out! – Color Sort crossed 100k (#2 free). Neither in Top Grossing → still scaling.
+- Action: dropped Competition score for arrow (4→3) and sort (3→2); sharpened the
+  "ship fast / being-late is the risk" call. Report: DOCS/research/2026-06-30-refresh.md.
+- market-snapshot.md left as-is (only 1 day old; still fresh).
+- Tooling: added `scripts/youtube_trends.py` — wires up the free YouTube Data API v3
+  (view-velocity trend detector on a keyword watchlist). Reads YOUTUBE_API_KEY from
+  env/.keys.local. Registered in references/data-sources-and-apis.md. Also created a
+  root .keys.local.example (was missing) documenting GEMINI_API_KEY + YOUTUBE_API_KEY.

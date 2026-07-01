@@ -93,6 +93,9 @@ re-theme) and confirm a **hybrid meta path** exists (no meta headroom = dead on 
 Score 1-5 on each axis (see `validation-and-testing.md` for the benchmarks behind these):
 - **Trend timing** — emerging vs saturated (CPI not spiked, charts still moving).
 - **Solo-buildability** — art/engineering burden for a first-time solo iOS dev.
+- **Single-input core** — can the whole core loop be played with *one* repeated gesture (all tap
+  **or** all slide, never mixed, no 3D-object manipulation)? Mixed input is a kill signal; see
+  `game-designer/patterns/single-input-modality.md`.
 - **Organic distribution fit** — ASO + short-form shareability (no paid UA needed).
 - **Monetization headroom** — clear hybrid meta + IAP/rewarded path; realistic ARPDAU.
 - **Competition** — moderate (beatable incumbents) vs winner-take-most.

@@ -1,0 +1,16 @@
+# Secrets template — copy to `.keys.local` and fill in real values.
+# `.keys.local` is gitignored and MUST NEVER be committed. Keep this file's KEY
+# names in sync with `.keys.local` (empty values only here).
+# Format: KEY=value  (one per line)
+
+# Google Gemini (image generation, API calls)
+GEMINI_API_KEY=
+
+# YouTube Data API v3 — free API key (no OAuth), used by
+# .claude/skills/games-researcher/scripts/youtube_trends.py for trend detection.
+# Create at console.cloud.google.com → enable "YouTube Data API v3" → API key.
+YOUTUBE_API_KEY=
+
+# Add more as needed, e.g.:
+# OPENAI_API_KEY=
+# APP_STORE_CONNECT_KEY_ID=

@@ -117,6 +117,10 @@ useful free game-specific taxonomy + performance data).
   `search.list` = 100 units (~100 searches/day); `videos.list` = 1 unit per ≤50 IDs.
   Pattern: few targeted searches → batch-hydrate view counts cheaply. Detect rising
   game interest via video view-velocity on a keyword watchlist. Solid.
+  **✅ WIRED UP:** `../scripts/youtube_trends.py` (added 2026-06-30). Reads
+  `YOUTUBE_API_KEY` from env or the nearest `.keys.local`; velocity = median(views/day)
+  over the top recent videos per keyword. ~101 units/keyword (~90 keywords/day). Default
+  watchlist = the arrow/sort mechanics; override with `--keywords`. Re-run weekly.
 - **Reddit API via PRAW** — free non-commercial: **100 QPM with OAuth** (app
   registration + 2025 pre-approval). Monitor r/incremental_games, r/iosgaming for demand
   signals; watch r/gamedev for "how do I clone X" (saturation warning). Solid.

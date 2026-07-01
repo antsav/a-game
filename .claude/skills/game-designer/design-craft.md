@@ -27,7 +27,9 @@ collection/upgrade + soft currency + one booster + one offer). For a first game,
 ## Anatomy of the game (design it in this order)
 
 1. **Core verb** — the one thing the player does, hundreds of times. (Pull, sort, merge, unblock,
-   clear.) If the verb isn't satisfying *raw*, no meta will save it.
+   clear.) If the verb isn't satisfying *raw*, no meta will save it. It must also be **one input
+   gesture** — all tap or all slide, never mixed mid-play (see
+   `patterns/single-input-modality.md`).
 2. **Core loop** — action → **instant feedback** → reward → next action. Seconds long. This is
    where "game feel" lives.
 3. **Level / session shape** — 1–3 minute levels; the player does several per sitting. Each level
@@ -40,6 +42,8 @@ collection/upgrade + soft currency + one booster + one offer). For a first game,
 Would this verb be satisfying to repeat **1,000 times with no reward attached**? If yes, you have
 a game. If it only works because of the rewards bolted on, the loop is hollow — fix the verb
 first. (This is the autotelic test; `my-game-preference` makes it a hard gate.)
+**Second gate on the same verb:** can the whole loop be played with *one repeated gesture*? If it
+needs both tap and slide, the verb isn't clean — simplify it (see `patterns/single-input-modality.md`).
 
 ## Onboarding / FTUE (first-time user experience)
 - **Seconds to fun.** First interaction *is* the core verb — no menus, no lecture.
