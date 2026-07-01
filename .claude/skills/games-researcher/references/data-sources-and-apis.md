@@ -47,6 +47,11 @@ https://itunes.apple.com/{country}/rss/{feed}/limit={N}/genre={genreId}/json
   (`.../games.json` → HTTP 404, verified). **For game-specific charts you must use the
   legacy iTunes RSS above.** Build v2 URLs at [rss.marketingtools.apple.com](https://rss.marketingtools.apple.com/).
 
+> **The daily tracker (`../scripts/daily_scan.py`) is built on exactly these two
+> endpoints** — RSS charts for rank+IDs, batched Lookup (`?id=a,b,c`) for metadata — and
+> writes the time series to `../data/`. Batch Lookup is what keeps it under Apple's
+> ~20/min throttle. Endpoints re-verified live 2026-07-01.
+
 ### iTunes Search & Lookup (app metadata)
 ```
 https://itunes.apple.com/search?term={q}&country=us&entity=software&limit={N}

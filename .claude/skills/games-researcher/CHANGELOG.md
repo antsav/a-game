@@ -3,6 +3,31 @@
 Append a dated one-line entry whenever the skill or its references change. This is how
 the skill's evolution stays auditable. Newest on top.
 
+## 2026-07-01 — daily emerging-candidate tracker (time-series pipeline + two lanes)
+- Reframed the skill into **two modes** sharing the six-axis model + stance: (1) a
+  repeatable **daily tracker** that persists a time series and outputs 4–5 games to play
+  tonight, and (2) the existing deep-research report to DOCS/. SKILL.md rewritten; scoring
+  model left intact (this feeds it, doesn't replace it).
+- **Verified live (2026-07-01) before building:** legacy iTunes RSS charts (genre filter
+  still the only game-chart feed), Lookup fields (`sellerName`/`artistName`/`userRatingCount`/
+  `genres`/`currentVersionReleaseDate`), and **batch Lookup** (comma-separated IDs → N
+  results) — the key to staying under Apple's ~20/min throttle. Endpoints unchanged since
+  the 06-30 verification. Noted: `sellerName` is the legal entity (e.g. "GRAND GAMES OYUN
+  VE YAZILIM ANONIM SIRKETI"), so Lane B must normalized-substring match both name fields.
+- **New:** `scripts/daily_scan.py` (pure stdlib, no deps) — runs Lane A (classify every
+  charting app by mechanic family, track rating-count velocity) + Lane B (flag new app IDs
+  from watchlist publishers); writes `data/scans/<date>.csv` + appends `data/candidates.csv`;
+  `--report` computes velocity/open-window/recency at read time and prints the ranked
+  shortlist. Tracks our own `first_seen` date (Apple's version date = latest update, not launch).
+- **New references:** `mechanic-taxonomy.md` (keyword families, mirrored in the script) and
+  `publisher-watchlist.md` (watchlist + alias matching). **New data scaffolding:**
+  `data/aliases.json`, `data/README.md` (schema + the explicit "no Postgres/SQLite/dashboard/
+  paid-API yet — revisit after 2–3 weeks + a concrete need" decision).
+- Design choices (noted, anti-over-engineering): `data/` lives **inside the skill** (self-
+  contained; avoids a lowercase top-level dir clashing with DOCS/); **stdlib not requests**
+  (zero deps, consistent with existing scripts); geo rotation is **weekly not daily** (so an
+  emerging geo gets consecutive days to compute velocity). Seeded day 1: US + Indonesia.
+
 ## 2026-06-29 — data-sources hardening (firsthand-verified API catalog)
 - Corrected `data-sources-and-apis.md` from live endpoint testing: v2 RSS lives at
   `rss.marketingtools.apple.com` and has **no Games genre filter** (404) → legacy iTunes

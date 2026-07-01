@@ -110,16 +110,13 @@ good craft (designer), something I'll love (preference), and pays (monetizer) �
 
 ---
 
-## Keeping this in sync (how I use this folder)
+## Notes for the chat
 
-- This `CHAT/` folder is the **source I sync into the Claude.ai project**: `INSTRUCTIONS.md`
-  goes in the project's **custom instructions** (or knowledge); the six reference files
-  (`games-researcher`, `game-designer`, `my-game-preference`, `game-monetizer`,
-  `game-distribution`, `unity-3d`) go in the project's **knowledge**.
-- When a skill or the project status meaningfully changes in the repo, I re-export the
-  affected file here and re-upload it to the chat project.
-- These are **summaries**, deliberately portable — they won't have the latest live market
-  numbers or the full reference text. Treat any specific number, price, version, or named
-  game as **possibly stale**; verify live before I act on it.
-- When I make a real decision in chat, I bring it back to the repo (root `CLAUDE.md`
-  "Decisions to make" + the relevant `DOCS/` doc).
+- The six reference files in this project's knowledge are **summaries**, deliberately
+  portable — they won't have the latest live market numbers or the full reference text.
+  Treat any specific number, price, version, or named game as **possibly stale**; verify
+  live before I act on it.
+- When I make a real decision here, I carry it back to the repo (root `CLAUDE.md`
+  "Decisions to make" + the relevant `DOCS/` doc), which stays the source of truth.
+- *(How this folder is maintained and synced lives in `CHAT/CLAUDE.md` in the repo — not
+  needed for our conversation.)*

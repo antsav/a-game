@@ -1,0 +1,19 @@
+{
+  "_comment": "Publisher-name alias map for Lane B watchlist matching. Keys are canonical publisher names; values are lowercase substrings matched against normalized sellerName AND artistName from the iTunes Lookup API. Add a fragment whenever a watchlist publisher charts under a name the matcher missed. See references/publisher-watchlist.md.",
+  "Voodoo": ["voodoo"],
+  "Rollic": ["rollic"],
+  "Homa": ["homa"],
+  "Supersonic": ["supersonic"],
+  "Lion Studios": ["lion studios"],
+  "CrazyLabs": ["crazylabs", "crazy labs"],
+  "Kwalee": ["kwalee"],
+  "SayGames": ["saygames", "say games"],
+  "Grand Games": ["grand games", "grand games oyun"],
+  "Beresnev Games": ["beresnev"],
+  "Azur Games": ["azur games", "azur interactive", "azur"],
+  "TapNation": ["tapnation", "tap nation"],
+  "Popcore": ["popcore"],
+  "Green Panda": ["green panda"],
+  "Yso Corp": ["yso corp", "yso"],
+  "Kayac": ["kayac"]
+}
