@@ -99,7 +99,7 @@ useful for ASO once you have an account. Not needed for cold trend scouting.
 | **AppMagic** | **Genuine free tier** (limited daily credits) + 1-week full trial | ~$400/mo entry (contact-sales; up to ~$1k/seat) | **Yes — public JSON REST API, 50+ endpoints, but paid add-on** |
 | **GameRefinery (Liftoff)** | **Genuinely useful: free downloads/revenue for 100k+ games across 33 markets** + best free feature-taxonomy reports | Full taxonomy enterprise | Enterprise only (no self-serve docs) |
 | **Sensor Tower** | Public Top Charts page + free "State of Mobile" reports | Enterprise (~$30k-150k/yr, est.) | Enterprise-gated |
-| **AppFigures** | Connect tier: Top Charts + free monthly "most downloaded/earning" reports; independent | from ~$/mo | Yes |
+| **AppFigures** | Connect tier: Top Charts + free monthly "most downloaded/earning" reports; independent | **$7.99 → $599.99/mo** (Connect→top tier); ⚠️ cheap tiers = *your own* apps only | Yes — but **competitor/market data needs the "Partner API" add-on** (higher tier, OAuth 1.0 / client keys) |
 | **data.ai / App Annie** | **GONE** — acquired by Sensor Tower (Mar 18 2024), brand retired | — | — |
 | **Apptopia** | none usable | ~$15k-50k/yr (est.) | Real API w/ public docs (dev.apptopia.com) but paid creds |
 | **SocialPeta / Apptica** | blog only | Enterprise | Gated |
@@ -108,6 +108,29 @@ All download/revenue figures from these are **modeled estimates** — downloads 
 reliable than revenue. Cross-check before betting money. **Best practical picks for a
 solo dev: AppMagic free tier + 1-week trial, and GameRefinery's free tier** (the most
 useful free game-specific taxonomy + performance data).
+
+### Which paid API for "search / sort / filter apps by our criteria" (verified 2026-06-30)
+
+The two SMB-viable APIs for programmatically scouting apps (the rest are
+enterprise/gated). Only relevant once you want to **automate** discovery or **size** a
+serious concept — hold the spend until the validation gate.
+
+- **AppMagic (now Sensor Tower's SMB tier) — best fit for GAME scouting.** 14M apps,
+  4.6M publishers, **500+ mechanic tags**, and metrics incl. downloads, revenue,
+  **D1–D360 retention**, session length, plus a **soft-launch detector**. Real JSON REST
+  API (50+ endpoints) — but the API is a **paid add-on**; pricing is contact-sales,
+  ~$400–$1,000/mo per seat. This is the tool whose filters match our criteria (e.g.
+  "puzzle, released <90d, downloads rising, non-top-10 publisher, in test geos").
+- **AppFigures — cheapest real API, weaker game taxonomy.** Transparent $7.99→$599.99/mo.
+  API covers ranks, downloads/revenue estimates, reviews, featured, ASO/keywords.
+  **The trap:** low tiers only expose *your own* apps — competitor/market-wide data
+  requires the **Partner API add-on** at a higher tier. Good if you mainly want rank/ASO
+  tracking; not the mechanic-taxonomy depth AppMagic gives.
+- **Recommendation:** free Apple scripts + AppMagic free tier/trial (manual UI) to pick a
+  concept; buy the **AppMagic API** only to automate a recurring scan or size a serious
+  concept. Treat `youtube_trends.py` as a **secondary organic-interest proxy, NOT app
+  data** — it shows content/creator demand (useful for no-UA TikTok distribution), never
+  downloads/revenue/retention.
 
 ---
 

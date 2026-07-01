@@ -40,20 +40,34 @@ distribution only (no paid UA war chest). So:
 5. **Recommend + a kill-fast validation plan:** a CTR/CPI test on a concept video, which geos,
    the metric gates for go/kill — sized for a no-UA-budget solo dev (organic soft-launch, ASO).
 
-## Current findings (2026-06-29 scan — verify before acting)
+## Current findings (2026-06-30 refresh — verify before acting)
 
 - The market is **hybrid-casual, not pure hyper-casual.** Pure ad-only single-mechanic games
   are dead for a no-UA solo dev — design a light progression + rewarded-ad + modest IAP from
   day one.
-- **Top pick: sort/organize puzzle ("color/block sort")** + fresh theme/meta. Hottest still-
-  rising family (Sort Puzzle revenue reportedly +116% YoY 2025), low art burden, shareable,
-  breaking cross-geo right now.
-- **Freshest window: "arrow puzzle"** (broke out ~Apr 2026) — earliest-stage, highest upside,
-  highest uncertainty. Worth a fast concept test. (This is my leading candidate.)
-- **The one risk:** sort puzzles heating fast; factory publishers (Rollic, Grand Games)
-  converging. Real danger is being **too late** — differentiation (theme + meta twist) and
-  **speed** beat polish here.
+- **Leading candidate: a calm "arrow puzzle"** (broke out ~Apr 2026) — earliest-stage window,
+  matches my taste exactly. **Color/block sort** is the safer sibling (hottest rising family,
+  reportedly +116% YoY 2025) but more crowded; a small sort game is a fine feel warm-up.
+- **06-30 delta:** the arrow window is now *openly contested* — multiple new clones launched
+  the same week — while the two leaders (Arrows – Puzzle Escape ~277k ratings; Block Out! –
+  Color Sort past 100k) keep compounding and are **not in Top Grossing yet** (still scaling).
+- **The one risk (sharper now):** being **TOO LATE.** Differentiation = the *calm* lane the
+  bright/juicy incumbents don't occupy + a gentle growing-world meta. **Speed beats polish.**
+  Start the cheap CTR/CPI concept test soon.
 - **Avoid:** match-3, survivor-likes, 4X/strategy, anything needing paid UA.
 
-> Numbers (CPI/eCPM/ARPDAU/revenue growth) vary 2–10× by source. Treat as directional; verify
-> live and cite source + date before betting on them.
+## Data & tooling behind the research (what's real vs a proxy)
+- **Free, wired up:** Apple iTunes RSS charts + Search/Lookup (rank/metadata/rating counts) —
+  the backbone. Plus a **YouTube view-velocity** script — treat this as a *secondary
+  organic-interest proxy* (content demand, useful for TikTok distribution), **NOT** app
+  downloads/revenue/retention.
+- **Manual (no usable API):** Meta Ad Library (US game ads are UI-only) + TikTok Creative
+  Center — for competitor ad-creative longevity.
+- **Paid app-intelligence API (hold until the validation gate):** **AppMagic** (Sensor
+  Tower's SMB tier, ~$400–1k/mo — 500+ mechanic tags, retention estimates, soft-launch
+  detector = best game-scouting fit) or **AppFigures** ($7.99–599.99/mo, cheaper but
+  competitor data needs its Partner API add-on). Buy one only to *automate* scanning or
+  *size* a serious concept — not before.
+
+> Numbers (CPI/eCPM/ARPDAU/revenue growth, ratings, prices) vary 2–10× by source and drift
+> fast. Treat as directional; verify live and cite source + date before betting on them.

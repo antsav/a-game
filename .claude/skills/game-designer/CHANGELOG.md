@@ -2,6 +2,18 @@
 
 Append a dated line whenever the craft doc or the pattern library changes. Newest on top.
 
+## 2026-06-30 — pattern: Forgiving Input
+- **patterns/forgiving-input.md** (flagship) — Anton's insight from the **arrows** game: in
+  zoomed-out mode arrows are small and a fingertip covers several at once, yet the game doesn't
+  punish or random-pick — it **selects the arrow that lets you progress further**. Analogy: the iOS
+  keyboard statistically picks nearby-likely keys instead of trusting the raw tap coordinate. Rule:
+  **resolve tap ambiguity in the player's favor** — widen hit targets beyond the sprite, rank
+  overlapping candidates by *legal → maximizes-progress → closest*, keep the assist invisible.
+  Grounded in intent-vs-execution, Fitts's Law, and "errors feel like the game's fault unless the
+  game absorbs them." Sibling to `single-input-modality` (that kills *mode* errors, this kills
+  *acquisition* errors) — together they make the control layer invisible. Strong fit with Anton's
+  calm/no-pressure north-star (every fat-finger misfire is a pressure spike).
+
 ## 2026-06-30 — pattern: One Input Modality
 - **patterns/single-input-modality.md** (flagship) — Anton's insight after playing **Arrow Stack**
   ("nicely done, but a 3D rotating cube, not tap-only"): successful hyper-hybrid-casual games keep

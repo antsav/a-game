@@ -39,3 +39,10 @@ the skill's evolution stays auditable. Newest on top.
   (view-velocity trend detector on a keyword watchlist). Reads YOUTUBE_API_KEY from
   env/.keys.local. Registered in references/data-sources-and-apis.md. Also created a
   root .keys.local.example (was missing) documenting GEMINI_API_KEY + YOUTUBE_API_KEY.
+- Data sources: verified live (2026-06-30) and folded into data-sources-and-apis.md the
+  paid-API landscape for "search/sort/filter apps by criteria": AppMagic (SMB tier, 14M
+  apps, 500+ mechanic tags, D1-D360 retention, soft-launch detector; real API as paid
+  add-on ~$400-1000/mo/seat = best game-scouting fit) vs AppFigures ($7.99-599.99/mo,
+  real API but competitor/market data gated behind the Partner API add-on). Added a
+  "which paid API" decision block. Clarified youtube_trends.py is a secondary
+  organic-interest proxy, NOT app-performance data — hold paid API spend until validation.
