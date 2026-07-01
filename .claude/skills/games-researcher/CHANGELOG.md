@@ -3,6 +3,43 @@
 Append a dated one-line entry whenever the skill or its references change. This is how
 the skill's evolution stays auditable. Newest on top.
 
+## 2026-07-01 — capture reports for trace-and-improve + shape the daily "top 10 test/watch" job
+- `--report` now **auto-saves** each run: `data/reports/<date>.md` (human snapshot of the
+  shortlist we acted on) + `data/reports/<date>-shortlist.csv` (the FULL eligible set,
+  machine-readable). Purpose: later join a past shortlist against the current candidates.csv
+  to measure whether the games we flagged "emerging" actually rose — how the ranking earns
+  trust or gets fixed. `--no-save` opts out. Report keyed by latest scan date; idempotent.
+- Locked the recurring daily job in SKILL.md: scan → `--report` (saves trace) → deliver a
+  **top 10 to test & watch**, each split TEST (download now + play brief) vs WATCH (the
+  velocity move that would promote it). Kept the "confirm what a game actually is before
+  classifying — don't trust the noisy tags" rule (learned the hard way this session).
+- Docs: data/README.md documents the `reports/` trace layer.
+
+## 2026-07-01 — fix: day-1 "emerging" was surfacing mature incumbents (and then newborns)
+- Root cause: rating_count is CUMULATIVE, so a snapshot can't measure "emerging" (a velocity
+  property); on a cold start `days_since_first_seen` is 0 for everything, so the whole chart
+  was "eligible" and mature 500k-rating titles (Magic Sort!, My Perfect Hotel) leaked in.
+- Added `release_date` (Apple's true first-launch date) to the schema + scan — the only
+  recency signal available before we accrue our own velocity. Re-scanned 07-01 to populate.
+- `--report` now has an explicit **cold-start mode** (single scan day): eligibility =
+  **`emerging`** = launched ≤180d AND rating_count in [1,000–50,000) (real-but-unscaled
+  traction — a floor to kill 0-rating `new`-feed newborns, a ceiling to kill arrived giants),
+  ranked by current chart traction. Once ≥2 scan days exist, velocity takes over automatically.
+- Also gated the "new-from-watchlist" flag behind `multi_day` (on day 1 every watchlist app
+  is trivially "new" → meaningless). Added `days_since_launch` + `emg` columns to the report.
+- Docs: data/README.md schema + "emerging is a velocity property" note; this is why the tool
+  is a *daily* tracker, not a one-shot.
+
+## 2026-07-01 — review pass: harden scan against silent feed-deprecation
+- Audited the 07-01 scan: data confirmed authentic (live Lookup `userRatingCount` matches
+  the CSV exactly — Meowdoku! 46,964; Block Out! 101,362), pipeline + `--report` working.
+- **Hardened `daily_scan.py` to fail LOUD, not silent:** if every chart for a geo returns
+  0 entries (the signature of Apple retiring/changing the legacy iTunes RSS feed), the scan
+  now `sys.exit`s with a diagnostic instead of writing an empty snapshot that would read as
+  a calm market. Added a second guard for the chart-ok-but-Lookup-empty case (0 total rows).
+- Considered a rating_count tie-break for day-1 report ranking; rejected/reverted — it
+  foregrounded giant incumbents (aquapark.io/Paper.io), fighting the sleeper-hunting goal.
+
 ## 2026-07-01 — daily emerging-candidate tracker (time-series pipeline + two lanes)
 - Reframed the skill into **two modes** sharing the six-axis model + stance: (1) a
   repeatable **daily tracker** that persists a time series and outputs 4–5 games to play

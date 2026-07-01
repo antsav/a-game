@@ -38,8 +38,17 @@ import urllib.request
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.normpath(os.path.join(HERE, "..", "data"))
 SCANS_DIR = os.path.join(DATA_DIR, "scans")
+REPORTS_DIR = os.path.join(DATA_DIR, "reports")
 MASTER_CSV = os.path.join(DATA_DIR, "candidates.csv")
 ALIASES_JSON = os.path.join(DATA_DIR, "aliases.json")
+
+# Columns for the saved machine-readable shortlist (data/reports/<date>-shortlist.csv).
+# The full eligible set, so we can later measure whether flagged emergers actually rose.
+REPORT_CSV_HEADER = ["report_date", "report_rank", "app_id", "geo", "title", "seller_name",
+                     "mechanic_tags", "days_since_launch", "rating_count",
+                     "rating_count_delta_1d", "rating_count_delta_7d", "best_rank",
+                     "rank_delta_7d", "open_window", "emerging", "is_watchlist_publisher",
+                     "lane", "score"]
 
 # Apple genre IDs we scan. "Casual" has no dedicated legacy-RSS id — it's captured
 # via games-all (6014) and separated by mechanic tag. Idle/tycoon lives in Simulation.
@@ -75,8 +84,8 @@ TAXONOMY = {
 
 CSV_HEADER = ["scan_date", "geo", "chart", "category", "rank", "app_id", "title",
               "seller_name", "price", "avg_rating", "rating_count",
-              "version_release_date", "first_seen_date", "mechanic_tags",
-              "is_watchlist_publisher", "notes"]
+              "release_date", "version_release_date", "first_seen_date",
+              "mechanic_tags", "is_watchlist_publisher", "notes"]
 
 UA = {"User-Agent": "games-researcher-daily-scan/1.0"}
 
@@ -208,6 +217,7 @@ def run_scan(scan_date, geos, limit):
         print(f"[{geo}] fetching charts…", file=sys.stderr)
         # (app_id -> set of (chart) it appears in, and its best rank / where)
         placements = {}  # app_id -> list of (chart, category, rank)
+        charts_ok = 0    # count of charts that returned >0 entries (deprecation canary)
         for cat, gid in GENRES.items():
             for chart in FEEDS:
                 try:
@@ -215,9 +225,22 @@ def run_scan(scan_date, geos, limit):
                 except Exception as e:  # noqa: BLE001
                     print(f"  ! {geo}/{chart}/{cat} failed: {e}", file=sys.stderr)
                     continue
+                if entries:
+                    charts_ok += 1
                 for rank, aid in entries:
                     placements.setdefault(aid, []).append((chart, cat, rank))
                 time.sleep(0.3)
+
+        # Fail LOUD, not silent: if every chart for a geo came back empty, the legacy
+        # iTunes RSS feed has almost certainly changed or been retired. Writing an empty
+        # snapshot would look like a calm market instead of a broken pipeline — refuse.
+        if charts_ok == 0:
+            sys.exit(
+                f"FATAL: all {len(GENRES) * len(FEEDS)} charts for geo '{geo}' returned 0 "
+                "entries. The legacy iTunes RSS feed likely changed/retired — NOT writing "
+                "an empty snapshot. Verify: "
+                "https://itunes.apple.com/us/rss/topfreeapplications/limit=5/genre=7012/json"
+            )
 
         ids = list(placements.keys())
         print(f"[{geo}] {len(ids)} unique apps → looking up metadata…", file=sys.stderr)
@@ -254,12 +277,18 @@ def run_scan(scan_date, geos, limit):
                     "price": m.get("price"),
                     "avg_rating": m.get("averageUserRating"),
                     "rating_count": m.get("userRatingCount"),
+                    "release_date": (m.get("releaseDate") or "")[:10],
                     "version_release_date": (m.get("currentVersionReleaseDate") or "")[:10],
                     "first_seen_date": first_seen,
                     "mechanic_tags": "|".join(tags),
                     "is_watchlist_publisher": str(watch).lower(),
                     "notes": ";".join(note),
                 })
+
+    # Second guard: charts returned apps but the Lookup layer yielded nothing usable.
+    if not rows:
+        sys.exit("FATAL: scan produced 0 rows (chart or Lookup layer failed) — "
+                 "not writing an empty snapshot.")
 
     # write the day's snapshot
     day_path = os.path.join(SCANS_DIR, f"{scan_date}.csv")
@@ -303,6 +332,7 @@ def build_series(rows):
             "seller": r["seller_name"], "tags": r["mechanic_tags"],
             "watch": r["is_watchlist_publisher"] == "true",
             "first_seen": r["first_seen_date"],
+            "release": r.get("release_date") or "",
         })
         day["charts"].add(r["chart"])
         rk = _f(r["rank"])
@@ -320,7 +350,7 @@ def _rc_at_or_before(days, target):
     return best
 
 
-def run_report(top_n):
+def run_report(top_n, save=True):
     rows = read_master()
     if not rows:
         print("No data yet. Run: python daily_scan.py", file=sys.stderr)
@@ -333,6 +363,10 @@ def run_report(top_n):
     latest = max(r["scan_date"] for r in rows)
     latest_d = dt.date.fromisoformat(latest)
     week_ago = (latest_d - dt.timedelta(days=7)).isoformat()
+    # multi_day: do we have >1 scan day at all? If not, velocity and the "new-from-
+    # watchlist" flag are meaningless (every app's first_seen == today), so we fall back
+    # to a launch-recency proxy for "emerging". See the header note printed below.
+    multi_day = len({r["scan_date"] for r in rows}) > 1
 
     cands, faded = [], []
     for (aid, geo), days in series.items():
@@ -351,14 +385,30 @@ def run_report(top_n):
         first_seen = global_first_seen.get(aid, cur["first_seen"])
         dsfs = (dt.date.fromisoformat(last) - dt.date.fromisoformat(first_seen)).days
         open_window = ("free" in cur["charts"]) and ("grossing" not in cur["charts"])
-        watch_new = cur["watch"] and first_seen == latest
+        watch_new = cur["watch"] and first_seen == latest and multi_day
         velocity = d7 if d7 is not None else ((d1 or 0) * 7)
+        has_velocity = d7 is not None or d1 is not None
+
+        # days since APPLE's true launch (releaseDate) — the only recency signal that
+        # works on day 1, before we've accumulated our own velocity.
+        try:
+            dsl = (dt.date.fromisoformat(last) - dt.date.fromisoformat(cur["release"])).days
+            if dsl < 0:
+                dsl = None  # bad/future release date — ignore
+        except ValueError:
+            dsl = None
+        # "emerging" proxy for a cold start (no velocity yet). Rating count is CUMULATIVE, so
+        # a big count = already-arrived (never emerging) → unscaled ceiling; but 0 ratings =
+        # no traction at all (a `new`-feed newborn) → a floor too. The sweet spot is a young
+        # launch WITH real-but-modest traction. Once we have velocity, this stops mattering.
+        emerging = (dsl is not None and dsl <= 180) and (rc_now is not None and 1_000 <= rc_now < 50_000)
 
         rec = {
             "aid": aid, "geo": geo, "title": cur["title"], "seller": cur["seller"],
             "tags": cur["tags"], "rc": rc_now, "d1": d1, "d7": d7, "rank": cur["best_rank"],
-            "rankd7": rankd7, "dsfs": dsfs, "open": open_window, "watch": cur["watch"],
-            "watch_new": watch_new, "velocity": velocity, "on_latest": last == latest,
+            "rankd7": rankd7, "dsfs": dsfs, "dsl": dsl, "emerging": emerging,
+            "open": open_window, "watch": cur["watch"], "watch_new": watch_new,
+            "velocity": velocity, "on_latest": last == latest,
         }
 
         # faded: was tracked recently, but fell off the latest scan OR velocity died
@@ -366,19 +416,38 @@ def run_report(top_n):
             faded.append(rec)
             continue
 
-        # eligible = plausibly in-window OR a Lane-B new launch OR clearly rising
-        eligible = (dsfs <= 45) or watch_new or open_window or (velocity and velocity > 0)
+        # Eligibility. Once we have velocity/history, use it; on a cold start (single day)
+        # fall back to launch-recency — otherwise dsfs==0 for everything and the whole
+        # chart is "eligible", which is how mature 500k-rating incumbents leaked in.
+        if multi_day:
+            eligible = (dsfs <= 45) or watch_new or open_window or (velocity and velocity > 0)
+        else:
+            eligible = emerging  # day 1: only young + real-but-modest-traction candidates
         if not eligible or not rec["on_latest"]:
             continue
 
-        # pre-ranking heuristic (NOT the six-axis score — the agent re-ranks by judgment)
-        score = velocity or 0
-        if open_window:
-            score *= 1.25
-        if dsfs <= 45:
-            score *= 1.15
-        if watch_new:
-            score += 500_000  # push pre-validated Lane-B launches to the top
+        # Pre-ranking heuristic (NOT the six-axis score — the agent re-ranks by judgment).
+        if multi_day:
+            # Primary = rating-count velocity. This is the real signal the tracker exists for.
+            score = velocity or 0
+            if open_window:
+                score *= 1.25
+            if dsfs <= 45:
+                score *= 1.15
+            if watch_new:
+                score += 500_000  # push pre-validated Lane-B launches to the top
+        else:
+            # Cold start: no velocity. Rank the emerging set by CURRENT traction (chart rank),
+            # with launch-youth and publisher pre-validation as secondary tiebreaks.
+            score = 0
+            if rec["rank"]:
+                score += max(0, 200 - rec["rank"]) * 10     # traction now dominates (0..~2000)
+            if dsl is not None:
+                score += max(0, 180 - dsl)                  # youth, secondary (0..180)
+            if open_window:
+                score += 100
+            if rec["watch"]:
+                score += 150                                # Lane-B publisher pre-validation
         rec["score"] = score
 
         # lane label
@@ -399,26 +468,66 @@ def run_report(top_n):
         s = f"{int(x):+,}" if plus else f"{int(x):,}"
         return s
 
-    print(f"\n# Daily candidate shortlist — as of {latest}")
-    print(f"# ranked by a pre-heuristic (velocity × open-window × recency, +Lane-B new). "
-          f"Re-rank with the six-axis model + calm-taste gate.\n")
-    hdr = f"{'#':>2}  {'title':<26} {'geo':<3} {'tags':<16} {'seen':>4} {'ratings':>9} {'Δ1d':>8} {'Δ7d':>9} {'rank':>4} {'Δrk7':>5} {'open':>4} {'lane':>4}"
-    print(hdr)
-    print("-" * len(hdr))
+    def dnum(x):
+        return f"{int(x)}d" if x is not None else "·"
+
+    mode = ("velocity (Δ ratings) — primary" if multi_day
+            else "COLD START: no velocity yet → ranked by launch-recency + unscaled "
+                 "(the day-1 'emerging' proxy). Re-run daily; velocity takes over at ≥2 days.")
+    L = []  # collect every output line so we can both print AND save the exact snapshot
+    L.append(f"# Daily candidate shortlist — as of {latest}")
+    L.append(f"# ranking basis: {mode}")
+    L.append(f"# Re-rank with the six-axis model + calm-taste gate. 'launch' = days since "
+             f"Apple's true release; 'emg' = young & not-yet-scaled.")
+    L.append("")
+    hdr = (f"{'#':>2}  {'title':<26} {'geo':<3} {'tags':<15} {'launch':>6} {'ratings':>9} "
+           f"{'Δ1d':>7} {'Δ7d':>8} {'rank':>4} {'open':>4} {'emg':>3} {'lane':>4}")
+    L.append(hdr)
+    L.append("-" * len(hdr))
     for i, r in enumerate(cands[:top_n], 1):
-        print(f"{i:>2}. {r['title'][:25]:<26} {r['geo']:<3} {(r['tags'] or '-')[:15]:<16} "
-              f"{r['dsfs']:>4} {num(r['rc']):>9} {num(r['d1'], True):>8} {num(r['d7'], True):>9} "
-              f"{('#'+str(int(r['rank']))) if r['rank'] else '·':>4} {num(r['rankd7'], True):>5} "
-              f"{'yes' if r['open'] else '·':>4} {r['lane']:>4}")
+        L.append(f"{i:>2}. {r['title'][:25]:<26} {r['geo']:<3} {(r['tags'] or '-')[:14]:<15} "
+                 f"{dnum(r['dsl']):>6} {num(r['rc']):>9} {num(r['d1'], True):>7} {num(r['d7'], True):>8} "
+                 f"{('#'+str(int(r['rank']))) if r['rank'] else '·':>4} "
+                 f"{'yes' if r['open'] else '·':>4} {'yes' if r['emerging'] else '·':>3} {r['lane']:>4}")
 
     if faded:
-        print(f"\n# Faded / pruning candidates (were tracked ≤7d ago, off the latest scan):")
+        L.append("")
+        L.append("# Faded / pruning candidates (were tracked ≤7d ago, off the latest scan):")
         for r in sorted(faded, key=lambda x: x["title"])[:10]:
-            print(f"  - {r['title'][:40]} ({r['geo']}, {r['tags'] or 'untagged'}) "
-                  f"— last ratings {num(r['rc'])}, dropped off charts")
+            L.append(f"  - {r['title'][:40]} ({r['geo']}, {r['tags'] or 'untagged'}) "
+                     f"— last ratings {num(r['rc'])}, dropped off charts")
 
-    print(f"\n{len(cands)} eligible candidates from {len(series)} tracked (app,geo) series. "
-          f"Data: {os.path.relpath(MASTER_CSV)}")
+    L.append("")
+    L.append(f"{len(cands)} eligible candidates from {len(series)} tracked (app,geo) series. "
+             f"Data: {os.path.relpath(MASTER_CSV)}")
+
+    report_text = "\n".join(L)
+    print(report_text)
+
+    if save:
+        os.makedirs(REPORTS_DIR, exist_ok=True)
+        # Human-readable snapshot (the shortlist we acted on that day — the audit trail).
+        md_path = os.path.join(REPORTS_DIR, f"{latest}.md")
+        with open(md_path, "w", encoding="utf-8") as f:
+            f.write("```\n" + report_text + "\n```\n")
+        # Machine-readable: the FULL eligible set (not just top_n) for later hit-rate analysis.
+        csv_path = os.path.join(REPORTS_DIR, f"{latest}-shortlist.csv")
+        with open(csv_path, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=REPORT_CSV_HEADER)
+            w.writeheader()
+            for i, r in enumerate(cands, 1):
+                w.writerow({
+                    "report_date": latest, "report_rank": i, "app_id": r["aid"],
+                    "geo": r["geo"], "title": r["title"], "seller_name": r["seller"],
+                    "mechanic_tags": r["tags"], "days_since_launch": r["dsl"],
+                    "rating_count": r["rc"], "rating_count_delta_1d": r["d1"],
+                    "rating_count_delta_7d": r["d7"], "best_rank": r["rank"],
+                    "rank_delta_7d": r["rankd7"], "open_window": r["open"],
+                    "emerging": r["emerging"], "is_watchlist_publisher": r["watch"],
+                    "lane": r["lane"], "score": round(r["score"], 1),
+                })
+        print(f"\n✓ report saved → {os.path.relpath(md_path)} + "
+              f"{os.path.relpath(csv_path)} ({len(cands)} rows for tracing)")
 
 
 # ---------------------------------------------------------------------------
@@ -430,10 +539,12 @@ def main():
     p.add_argument("--limit", type=int, default=100, help="apps per chart (default 100)")
     p.add_argument("--date", help="scan date YYYY-MM-DD (default today)")
     p.add_argument("--top", type=int, default=15, help="rows in --report shortlist")
+    p.add_argument("--no-save", action="store_true",
+                   help="with --report: print only, don't write data/reports/<date>.{md,csv}")
     a = p.parse_args()
 
     if a.report:
-        run_report(a.top)
+        run_report(a.top, save=not a.no_save)
         return
 
     scan_date = a.date or dt.date.today().isoformat()

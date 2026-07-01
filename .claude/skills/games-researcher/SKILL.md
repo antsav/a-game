@@ -108,9 +108,8 @@ these `A+B`.
 
 ## Mode 1 — the daily tracker procedure
 
-Run this when the user wants the daily scan, "what should I play tonight," a velocity
-read, or just periodically to keep the series alive. **Scan daily** — the value is the
-accumulating time series, not any single day.
+**This is the recurring daily job:** "do a scan and give me the top 10 candidates to test
+& watch." Run it every day — the value is the accumulating time series, not any one day.
 
 1. **Scan (writes data, hits the network):**
    ```bash
@@ -120,25 +119,37 @@ accumulating time series, not any single day.
    Arcade/Simulation, charts Free/Grossing/New. Appends one row per app/geo/chart to
    `data/scans/<date>.csv` and the `data/candidates.csv` master. Idempotent per day.
 
-2. **Report (reads the series, no network):**
+2. **Report (reads the series, no network — auto-saves the trace):**
    ```bash
    python .claude/skills/games-researcher/scripts/daily_scan.py --report
    ```
-   Prints a pre-ranked table with the derived velocity metrics (Δ1d, Δ7d rating count,
-   rank move, open-window, days-since-first-seen, lane A/B/A+B) plus a "faded" list of
-   candidates whose velocity died or that dropped off the charts.
+   Prints the pre-ranked table and **saves it** to `data/reports/<date>.md` (human
+   snapshot) + `data/reports/<date>-shortlist.csv` (the full eligible set, for tracing).
+   Columns: launch age, rating count, Δ1d/Δ7d, rank, open-window, `emg` (emerging), lane.
+   - **Cold start (1 scan day):** no velocity yet, so it ranks the **emerging** set —
+     launched ≤180d AND 1k–50k ratings — by current chart traction. This is a *watchlist*,
+     not a verdict.
+   - **≥2 scan days:** velocity (Δ rating count) takes over as the primary ranking.
 
-3. **Turn the table into the play shortlist (your judgment, not the script's).** The
-   `--report` heuristic is a pre-sort, **not** the six-axis score. Take its top rows,
-   **apply the calm-taste gate and the six-axis model**, drop giant incumbents and
-   over-tagged noise (the taxonomy over-tags on purpose — a human prunes here), and pick
-   **4–5 games max** to actually download and play. Cross-check anything ambiguous with
-   `app_lookup.py` or the store page.
+3. **Deliver the top 10 to test & watch (your judgment, not the script's).** The heuristic
+   is a pre-sort, **not** the six-axis score. Take its top rows, **apply the calm-taste
+   gate and the six-axis model**, drop over-tagged noise (the taxonomy over-tags on
+   purpose) and anything already-scaled, and split the 10 into:
+   - **TEST** — download & play now (real traction + calm-lane fit): give a one-line play brief.
+   - **WATCH** — too early/unproven to invest a session, but promising: say what velocity
+     move would promote it to TEST.
+   Cross-check anything ambiguous with `app_lookup.py` or the store page — **confirm what a
+   game actually is before classifying it** (don't infer from the noisy mechanic tags).
 
-4. **Write the play shortlist** (chat, and optionally `DOCS/research/`): see "Daily output".
+4. **Trace over time.** Because every report is saved, you can compare today's flags against
+   past `-shortlist.csv` files + the current `candidates.csv` to see whether the games we
+   called "emerging" actually rose — and fix the ranking when they didn't.
 
-> **Day 1 caveat:** with one day of data, velocity is null and ranking is weak — that's
-> expected. The tracker earns its keep after ~3–7 daily runs. Don't over-interpret a cold start.
+> **Emerging is a velocity property — a single snapshot can't measure it.** On day 1,
+> "emerging" is a launch-recency + unscaled-traction *proxy*, and even a 6-month-old game
+> with 20k ratings might be flat or dying. Only the daily velocity separates real risers
+> from corpses. That's why this is a *daily* tracker, not a one-shot report. Don't
+> over-claim on a cold start.
 
 ## Mode 2 — deep concept research (the full funnel)
 
@@ -181,16 +192,20 @@ toward fast, cheap kill signals.
 
 ## Daily output (Mode 1 — what the tracker produces)
 
-A tight ranked shortlist — **4–5 candidates max** — each with:
-- Title, publisher, mechanic family, `first_seen` / days tracked.
-- The velocity read (rating-count 7-day delta, rank move, open-window yes/no).
-- **Why it's flagged** — Lane A riser / Lane B new publisher launch / both (`A+B`).
-- A **one-line play brief:** what to look for when testing it — the core verb, the one
-  thing that makes you want to replay, and where the **calm-lane differentiation gap**
-  might be.
+The canonical daily deliverable: a ranked **top 10 to test & watch**, each row with:
+- Title, publisher, mechanic family, launch age + rating count (the emerging read).
+- The velocity read once we have it (rating-count Δ7d, rank move, open-window yes/no).
+- **Why it's flagged** — Lane A riser / Lane B new publisher launch / both (`A+B`) /
+  emerging-by-launch.
+- **TEST vs WATCH** verdict:
+  - **TEST** → a one-line play brief: the core verb, the one thing that makes you want to
+    replay, and where the **calm-lane differentiation gap** might be.
+  - **WATCH** → the one metric move that would promote it (e.g. "if Δ7d stays positive and
+    it holds top-30 through the week").
 
 Plus a one-line note on any candidate that **dropped off** (velocity died) so we prune the
-watchlist. Keep it terminal-tight; this feeds tonight's play session, not a slide deck.
+watchlist. Keep it terminal-tight — this feeds a play session, not a slide deck. The full
+ranked set is saved to `data/reports/` regardless, so the chat answer stays short.
 
 ## Report output (Mode 2 — deep research)
 

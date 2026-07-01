@@ -1,0 +1,55 @@
+report_date,report_rank,app_id,geo,title,seller_name,mechanic_tags,days_since_launch,rating_count,rating_count_delta_1d,rating_count_delta_7d,best_rank,rank_delta_7d,open_window,emerging,is_watchlist_publisher,lane,score
+2026-07-01,1,6761760135,us,Meowdoku!,OAKEVER GAMES PTE. LTD.,stack|idle|draw|dig,43,46964.0,,,1.0,,True,True,False,A,2227.0
+2026-07-01,2,6766739255,us,Rebel Glam: Dress Up Games,"Arcloom., Ltd.",stack|crowd,49,5484.0,,,8.0,,True,True,False,A,2151.0
+2026-07-01,3,6754839783,us,Bubble Word Jam,Lion Studios Plus LLC,sort|unblock|merge|idle|draw|dig,147,38439.0,,,8.0,,False,True,True,B,2103.0
+2026-07-01,4,6761469046,us,Rap Star:Idle Clicker,聪 马,stack|idle|physics|draw,89,18431.0,,,10.0,,True,True,False,A,2091.0
+2026-07-01,5,6759081967,us,Jewel Coloring,Ta Ta Game Technology Limited,sort|merge|idle|draw|dig,133,24079.0,,,8.0,,True,True,False,A,2067.0
+2026-07-01,6,6759763476,us,Bus Traffic Fever!,"GOODROID,Inc.",sort|unblock|merge|draw,110,28715.0,,,5.0,,False,True,False,-,2020.0
+2026-07-01,7,6755455500,id,Hollywood Merge,VoyagerOne Distribution Limited,merge|dig,124,1525.0,,,9.0,,False,True,False,-,1966.0
+2026-07-01,8,6759000921,us,Idle Dot Shooter!,"INFINITY GAMES, LDA",stack|idle|draw|crowd|dig,139,9742.0,,,18.0,,True,True,False,A,1961.0
+2026-07-01,9,6741503079,us,Pokémon Champions,The Pokemon Company,,14,16519.0,,,32.0,,True,True,False,A,1946.0
+2026-07-01,10,6746151928,id,Heartopia,"XD Entertainment Co., Ltd.",stack|draw,175,4494.0,,,7.0,,False,True,False,-,1935.0
+2026-07-01,11,6756989323,us,Last Asylum: Plague,WISENESS GAME ONLINE INTERNATIONAL LTD,physics|draw|crowd,140,26160.0,,,11.0,,False,True,False,-,1930.0
+2026-07-01,12,6757844491,id,Tricky Story 2: Brain Twist,Tang Thi Thuy,idle,160,1023.0,,,9.0,,False,True,False,-,1930.0
+2026-07-01,13,6762342518,us,Fluffy Drop,UniRise Digital Limited,idle|physics|draw|crowd,71,12053.0,,,31.0,,True,True,False,A,1899.0
+2026-07-01,14,6758149135,us,Money Sort: Merge Puzzle,Loop Games Oyun Teknolojileri Anonim Sirketi,sort|merge|stack|draw|dig,105,2507.0,,,28.0,,True,True,False,A,1895.0
+2026-07-01,15,6759077038,us,Profile Perfect,Lion Studios Plus LLC,sort|merge|idle|draw|dig,107,7015.0,,,34.0,,False,True,True,B,1883.0
+2026-07-01,16,6758326278,id,Amaze GO!,OAKEVER GAMES PTE. LTD.,sort|unblock|idle|physics|draw|crowd|dig,138,2920.0,,,29.0,,True,True,False,A,1852.0
+2026-07-01,17,6757844491,us,Tricky Story 2: Brain Twist,Tang Thi Thuy,idle,160,14697.0,,,30.0,,True,True,False,A,1820.0
+2026-07-01,18,6741567125,us,Clash of Critters,FARLIGHT PTE. LTD.,merge|physics,42,31493.0,,,32.0,,False,True,False,-,1818.0
+2026-07-01,19,1642607669,us,Game of Thrones: Dragonfire,Warner Bros. Entertainment,merge|stack|idle|physics|draw|crowd|dig,29,5705.0,,,36.0,,False,True,False,-,1791.0
+2026-07-01,20,6758138698,us,Car Sort: Color Puzzle,Rollic Games Oyun Yazilim ve Pazarlama Anonim Sirketi,sort|unblock|stack|idle|draw,156,5672.0,,,41.0,,False,True,True,B,1764.0
+2026-07-01,21,6767091927,us,Jigsaw Drop: Solitaire Puzzle,"Chengdu Runyou Technology Co., Ltd",merge|physics|dig,51,12434.0,,,47.0,,True,True,False,A,1759.0
+2026-07-01,22,6745761596,us,Coin Master - Board Adventure,Moon Active LTD,stack|idle|dig,146,31890.0,,,28.0,,False,True,False,-,1754.0
+2026-07-01,23,6751532378,us,My Garden Tale,MODO PTE. LTD.,merge|stack|draw|crowd,150,1797.0,,,29.0,,False,True,False,-,1740.0
+2026-07-01,24,6754158504,id,Ragnarok Origin Classic,Gravity Game Vision Limited,stack|physics|draw,98,2926.0,,,35.0,,False,True,False,-,1732.0
+2026-07-01,25,6760325543,us,CubeAway - 3DPuzzle,"GOODROID,Inc.",merge|crowd,110,37375.0,,,45.0,,True,True,False,A,1720.0
+2026-07-01,26,6760377931,us,Mahjong Rumble: Win Real Cash,Aviagames Inc.,stack|draw,78,1338.0,,,50.0,,True,True,False,A,1702.0
+2026-07-01,27,6754878717,id,The Cozy Florist,"RiftSky Games Co.,Limited",stack|physics|draw|crowd,140,2199.0,,,34.0,,False,True,False,-,1700.0
+2026-07-01,28,6757801241,us,I Am Taxi Driver,Estoty LLC,dig,134,22276.0,,,49.0,,True,True,False,A,1656.0
+2026-07-01,29,6769314786,us,Food Hunt: Pixel Puzzle,FUNFINITY PTE. LTD,sort|unblock|stack|idle|draw|dig,48,5551.0,,,52.0,,False,True,False,-,1612.0
+2026-07-01,30,6740966864,us,Dicero!,HABBY PTE. LTD.,crowd|dig,71,19340.0,,,50.0,,False,True,False,-,1609.0
+2026-07-01,31,6755455500,us,Hollywood Merge,VoyagerOne Distribution Limited,merge|dig,124,11700.0,,,45.0,,False,True,False,-,1606.0
+2026-07-01,32,6751270546,us,Sword x Staff,BOLTRAY PTE. LTD.,stack|idle|draw|dig,43,26294.0,,,54.0,,False,True,False,-,1597.0
+2026-07-01,33,6760320099,us,FIFA Heroes: Football Action,Solace Games SARL,stack|physics|draw|crowd,7,3256.0,,,71.0,,True,True,False,A,1563.0
+2026-07-01,34,6756058501,us,Jelly Busters: Puzzle Game,Moon Active LTD,stack|idle|physics|draw|crowd|dig,156,1004.0,,,52.0,,False,True,False,-,1504.0
+2026-07-01,35,6756411045,us,Color Dots Connect,Gimica GmbH,stack|draw|crowd,98,4615.0,,,68.0,,True,True,False,A,1502.0
+2026-07-01,36,6759967969,us,Idle Ball Escape: Smash Rings,Freeplay LLC,unblock|idle|physics,49,1220.0,,,73.0,,True,True,False,A,1501.0
+2026-07-01,37,6763011499,us,Grass Master – Cutting Game,SayGames LTD,draw,63,3798.0,,,87.0,,True,True,True,A+B,1497.0
+2026-07-01,38,6770442236,us,ArrowLogicPuzzle,晨煜 邢,draw,43,1554.0,,,74.0,,True,True,False,A,1497.0
+2026-07-01,39,6752886832,us,Hotel Legacy: Merge Game,Century Games Innovation Pte. Ltd.,merge|idle|draw,168,1900.0,,,59.0,,False,True,False,-,1422.0
+2026-07-01,40,6736774022,us,Baseball Hits 26,"Ares Interactive, Inc.",unblock|stack|idle|physics|draw|crowd|dig,106,10918.0,,,66.0,,False,True,False,-,1414.0
+2026-07-01,41,6755861844,us,Let Them In?,FTY LLC.,stack|draw|crowd|dig,106,6157.0,,,76.0,,True,True,False,A,1414.0
+2026-07-01,42,6756377863,us,Word Kitchen,Gimica GmbH,crowd,92,3853.0,,,79.0,,True,True,False,A,1398.0
+2026-07-01,43,6749302379,us,Merge Teahouse,HONGKONG HEILI LIMITED,merge|idle|draw|crowd,169,4387.0,,,62.0,,False,True,False,-,1391.0
+2026-07-01,44,6757261926,us,Reality Bay: Merge & Discover,Moon Active LTD,merge|stack|draw|crowd|dig,135,1773.0,,,78.0,,True,True,False,A,1365.0
+2026-07-01,45,6764724401,us,LoopArrowEscape,浩帆 吴,unblock|dig,62,7608.0,,,86.0,,True,True,False,A,1358.0
+2026-07-01,46,6737416185,us,Househunt: Fun With Real Homes,"Closing Theory Studios, Inc.",stack,105,2900.0,,,83.0,,True,True,False,A,1345.0
+2026-07-01,47,6757154335,us,Cube Land Puzzle Game,ROTATELAB YAZILIM VE BILISIM TEKNOLOJILERI SANAYI TICARET ANONIM SIRKETI,stack|idle|physics|draw|crowd,164,2459.0,,,69.0,,False,True,False,-,1326.0
+2026-07-01,48,6755805872,us,Pawn to Don Mafia Crime Story,FUNCELL GAMES PRIVATE LIMITED,crowd,171,1256.0,,,79.0,,True,True,False,A,1319.0
+2026-07-01,49,6754275296,us,Pop Epoch: Civilization Tycoon,NexWave Tech Limited,unblock|idle|crowd,123,1159.0,,,77.0,,False,True,False,-,1287.0
+2026-07-01,50,6761477956,us,Path Flow - Maze Puzzle,GlimmerJoy Limited,unblock|idle|draw|crowd,85,7725.0,,,91.0,,True,True,False,A,1285.0
+2026-07-01,51,6754545818,us,Last Light: Wasteland,"Hong Kong Bingchuan Network Co., Ltd.",physics|crowd,148,3905.0,,,75.0,,False,True,False,-,1282.0
+2026-07-01,52,6760089163,us,Mahjong Master-Fun Puzzle Game,PANDAS OF CARIBBEAN LIMITED,idle|draw|crowd|dig,100,27314.0,,,93.0,,True,True,False,A,1250.0
+2026-07-01,53,6755585789,us,Overgeared Hero: Merge RPG,5minlab,merge|stack|crowd,37,1255.0,,,92.0,,False,True,False,-,1223.0
+2026-07-01,54,6746151928,us,Heartopia,"XD Entertainment Co., Ltd.",stack|draw,175,29289.0,,,88.0,,False,True,False,-,1125.0

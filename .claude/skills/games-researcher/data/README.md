@@ -26,11 +26,18 @@ is serious enough to need download/revenue *estimates* to size its market — se
 
 ```
 data/
-  scans/YYYY-MM-DD.csv   one file per scan day (full snapshot of that day's rows)
-  candidates.csv         appended master series (all days) — the file --report reads
-  aliases.json           publisher-name alias map for Lane B matching
-  README.md              this file
+  scans/YYYY-MM-DD.csv            one file per scan day (full snapshot of that day's rows)
+  candidates.csv                  appended master series (all days) — the file --report reads
+  reports/YYYY-MM-DD.md           saved human snapshot of that day's ranked shortlist (audit trail)
+  reports/YYYY-MM-DD-shortlist.csv  the full eligible set that day, machine-readable, for tracing
+  aliases.json                    publisher-name alias map for Lane B matching
+  README.md                       this file
 ```
+
+`reports/` is the **trace-and-improve** layer. Each `--report` run saves what we flagged
+that day, so later we can join a past `-shortlist.csv` against the current `candidates.csv`
+and ask: *did the games we called "emerging" actually rise?* That's how the ranking earns
+trust (or gets fixed). Overwritten if `--report` re-runs for the same latest scan day.
 
 `scans/*.csv` and `candidates.csv` are **generated data** — regenerable by re-running the
 scan, but the point is to *accumulate* them over time (that's the velocity signal), so they
@@ -51,7 +58,8 @@ re-run that day; the master is de-duplicated on `(scan_date, geo, chart, categor
 | `seller_name` | Lookup `sellerName` | legal entity (used for Lane B match) |
 | `price` | Lookup `price` | 0.0 for free |
 | `avg_rating` | Lookup `averageUserRating` | score, NOT a scaling signal — barely moves |
-| `rating_count` | Lookup `userRatingCount` | **the primary signal** — best free download proxy; storefront-specific |
+| `rating_count` | Lookup `userRatingCount` | **the primary signal** — best free download proxy; storefront-specific. ⚠️ CUMULATIVE — a big count means *already arrived*, never *emerging* |
+| `release_date` | Lookup `releaseDate` | Apple's **true first-launch** date — the only recency signal available on day 1, before we've accrued velocity |
 | `version_release_date` | Lookup `currentVersionReleaseDate` | ⚠️ latest *update*, NOT first launch |
 | `first_seen_date` | our own | first `scan_date` this `app_id` ever appeared in our data — the real recency signal |
 | `mechanic_tags` | classifier | pipe-joined families, e.g. `sort|idle` (see `references/mechanic-taxonomy.md`) |
@@ -60,7 +68,17 @@ re-run that day; the master is de-duplicated on `(scan_date, geo, chart, categor
 
 ### Derived at read time (computed by `--report`, never stored)
 `rating_count_delta_1d`, `rating_count_delta_7d`, `rank_delta_7d`, `days_since_first_seen`,
-`open_window` (in `free` but absent from `grossing` for that geo/day).
+`days_since_launch` (from `release_date`), `open_window` (in `free` but absent from
+`grossing` for that geo/day).
+
+> **Emerging is a velocity property — one snapshot can't measure it.** "Emerging" means
+> *rising in an open window*, which needs the time series. Until we have ≥2 scan days,
+> `--report` runs in **cold-start mode**: it can't rank by velocity, so it surfaces the
+> **`emerging` proxy** — launched ≤180d AND rating_count in **[1,000 – 50,000)** (real but
+> not-yet-scaled traction) — ranked by current chart traction. This is deliberately a
+> *watchlist*, not a verdict: re-run daily and the 7-day rating-count delta confirms which
+> of these are actually climbing vs flat/dying. Once velocity exists, it takes over and the
+> proxy stops mattering.
 
 > **Why `first_seen_date` is our own field, not `version_release_date`:** Apple's
 > `currentVersionReleaseDate` is the date of the *latest update*, so a 3-year-old game that
